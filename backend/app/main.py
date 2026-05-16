@@ -1,0 +1,29 @@
+from contextlib import asynccontextmanager
+from pathlib import Path
+
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+
+from . import models  # noqa: F401 — register tables on Base before create_all
+from .database import Base, engine
+from .routers import health, pings
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # REQ-013 — create tables when the application starts (not at import time,
+    # so tests that override the DB dependency never touch sandbox.db).
+    Base.metadata.create_all(bind=engine)
+    yield
+
+
+app = FastAPI(title="Agentic Coding Sandbox", lifespan=lifespan)
+
+# REQ-015 — API endpoints under /api/
+app.include_router(health.router, prefix="/api")
+app.include_router(pings.router, prefix="/api")
+
+# REQ-014 — mount frontend at /, serving index.html as default.
+# MUST come AFTER the API routers, otherwise the StaticFiles mount swallows /api/* requests.
+FRONTEND_DIR = Path(__file__).resolve().parents[2] / "frontend"
+app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
