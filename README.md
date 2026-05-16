@@ -9,6 +9,7 @@ It ships one end-to-end smoke-test feature (`Ping`) that exercises every layer �
 - [uv](https://docs.astral.sh/uv/) — the Python package manager. Installs Python 3.13 automatically using the version pinned in `.python-version`.
 - `git`.
 - A modern browser to view the app.
+- [agent-browser](https://github.com/vercel-labs/agent-browser) — browser-automation CLI used by `/ws-gogogo` for end-to-end frontend verification. Required only if you'll work on specs involving UI changes; backend-only work doesn't need it.
 
 No Node, no Docker, no global Python, no `make`, no JS package manager.
 
@@ -17,10 +18,11 @@ No Node, no Docker, no global Python, no `make`, no JS package manager.
 ### macOS
 
 ```bash
-brew install uv git
+brew install uv git agent-browser
+agent-browser install   # downloads Chrome for Testing; one-time
 ```
 
-If you don't use Homebrew, follow the [uv install guide](https://docs.astral.sh/uv/getting-started/installation/) and install `git` via Xcode Command Line Tools (`xcode-select --install`).
+If you don't use Homebrew, follow the [uv install guide](https://docs.astral.sh/uv/getting-started/installation/) and install `git` via Xcode Command Line Tools (`xcode-select --install`). For `agent-browser` alternatives, see the [project README](https://github.com/vercel-labs/agent-browser).
 
 ### Linux / Windows (WSL2)
 
@@ -35,6 +37,15 @@ sudo apt update && sudo apt install -y git
 
 Fedora: `sudo dnf install git`, then install uv with the same `curl` command above.
 Arch: `sudo pacman -S git`, then install uv with the same `curl` command above.
+
+If you'll use `/ws-gogogo` for frontend verification, also install `agent-browser`. The simplest path is Cargo (requires the Rust toolchain):
+
+```bash
+cargo install agent-browser
+agent-browser install
+```
+
+For alternative install methods (Homebrew on Linux, npm, building from source), see the [agent-browser README](https://github.com/vercel-labs/agent-browser).
 
 ## Setup
 
