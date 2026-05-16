@@ -159,7 +159,7 @@ After all tests pass and reviews are clean:
    ```
 5. Save the spec file.
 
-## Phase 8 — Push and PR
+## Phase 8 — Commit on branch
 
 ### Branch setup
 
@@ -168,16 +168,20 @@ After all tests pass and reviews are clean:
    - Create a feature branch: `git checkout -b feat/<spec-slug>` (derive the slug from the spec filename, e.g., `feat/sysadmin-user-management`).
 3. If already on a feature branch, stay on it.
 
-### Push and PR
+### Stop at the local branch
 
-1. Push the branch: `git push -u origin HEAD`
-2. Check if a PR already exists for this branch: `gh pr view --json number 2>/dev/null`
-3. If **no PR exists**, create one:
-   - Title: short summary of what was implemented (under 70 chars)
-   - Body: list of implemented requirements, test summary, review status
-   - Use `gh pr create --title "..." --body "$(cat <<'EOF' ... EOF)"`
-4. If a **PR already exists**, do nothing — the push already updated it.
-5. Report the PR URL to the user.
+Do not push. Do not create a PR. The skill's job ends once the work is committed on the feature branch.
+
+Tell the user:
+
+> Implementation is committed to branch `<name>`. Push and open a PR manually when you're ready:
+>
+> ```bash
+> git push -u origin HEAD
+> gh pr create --title "<short summary>" --body "<requirements + test/review summary>"
+> ```
+
+Rationale: participants may not have a personal remote configured, and pushing crosses into shared infrastructure — that step belongs to the user, not the skill.
 
 ## Phase 9 — Summary
 
@@ -188,7 +192,7 @@ Present a final summary to the user:
 - Review findings addressed
 - Any remaining suggestions deferred to the user
 - The spec file has been updated with awaiting UAT status
-- PR link
+- The branch the work was committed to, with the manual push + `gh pr create` commands the user can run when ready
 - Suggest the user do a manual UAT walkthrough
 
 ## Rules
