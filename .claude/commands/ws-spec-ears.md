@@ -56,9 +56,11 @@ Based on their answer, classify internally as one of:
 - **Fix** — correcting broken or incorrect behavior
 - **Tweak** — adjusting existing behavior (performance, UX, limits, defaults, etc.)
 
-Tell the developer which type you classified it as and move on. Do not ask them to confirm the classification unless it is genuinely ambiguous.
+Tell the developer which type you classified it as and move on.
 
 ## Phase 2 — Interview
+
+**Minimum: at least 2 interview rounds (2–4 questions each) before Phase 3, regardless of input quality.** Phase 2 is never skipped or short-circuited.
 
 Ask focused questions to extract the information needed for EARS requirements. Ask **2–4 questions at a time**, grouped logically. Do **not** dump all questions at once. Adapt follow-ups based on answers.
 
@@ -97,9 +99,10 @@ Ask focused questions to extract the information needed for EARS requirements. A
 
 ### Interview rules
 
-- If `$ARGUMENTS` already answers a specific question precisely, acknowledge it and move to the next question — don't ask the developer to restate it. But do not skip the question categories themselves.
+- You must ask at least one round of questions in every category that applies to the work type, even if `$ARGUMENTS` appears to cover it. Phase 2 is never skipped or short-circuited; "enough information" is not grounds for moving to Phase 3.
+- If `$ARGUMENTS` answers a question, still ask a clarifying or sharpening follow-up (edge cases, measurable thresholds, unwanted behaviors) — never move on without a user turn in that category.
 - If an answer is vague ("it should be fast"), push for a measurable value ("under what latency?").
-- When you have enough information to write the spec, say so and move to Phase 3. Do not over-interview.
+- Once every applicable category has had a user turn and you have no further sharpening to do, move to Phase 3. Do not over-interview.
 - Keep your questions short and conversational. No preambles. No long explanations of why you are asking.
 
 ## Phase 3 — Write or update the EARS spec
