@@ -1,12 +1,16 @@
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from . import models  # noqa: F401 — register tables on Base before create_all
-from .database import Base, engine
+from .database import REPO_ROOT, Base, engine
 from .routers import health, pings
+
+FRONTEND_DIR = REPO_ROOT / "frontend"
+if not FRONTEND_DIR.is_dir():
+    # Fail loudly at import time rather than serving 404s from a silently-empty mount.
+    raise RuntimeError(f"frontend directory not found at {FRONTEND_DIR}")
 
 
 @asynccontextmanager
@@ -25,5 +29,4 @@ app.include_router(pings.router, prefix="/api")
 
 # REQ-014 — mount frontend at /, serving index.html as default.
 # MUST come AFTER the API routers, otherwise the StaticFiles mount swallows /api/* requests.
-FRONTEND_DIR = Path(__file__).resolve().parents[2] / "frontend"
 app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
