@@ -19,4 +19,4 @@ def create_ping(db: Session = Depends(get_db)):
 
 @router.get("/pings", response_model=list[PingOut])
 def list_pings(db: Session = Depends(get_db)):
-    return db.query(Ping).order_by(Ping.created_at.desc(), Ping.id.desc()).all()
+    return db.query(Ping).order_by(Ping.created_at.desc()).all()

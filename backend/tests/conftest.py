@@ -8,15 +8,21 @@ from app.database import Base, get_db
 from app.main import app
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def engine():
+    # Function-scoped so each test gets a fresh in-memory DB with no row
+    # leakage from earlier tests. StaticPool ensures the single in-memory
+    # connection is shared across threads within one test.
     eng = create_engine(
         "sqlite:///:memory:",
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
     Base.metadata.create_all(eng)
-    return eng
+    try:
+        yield eng
+    finally:
+        eng.dispose()
 
 
 @pytest.fixture()
