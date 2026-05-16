@@ -1,0 +1,13 @@
+{
+  "autoMemoryEnabled": false,
+  "permissions": {
+    "allow": [
+      "Bash(uv run pytest:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(rm sandbox.db)",
+      "Bash(rm -f sandbox.db)",
+      "Bash(find:*)",
+      "Bash(grep:*)"
+    ]
+  }
+}
