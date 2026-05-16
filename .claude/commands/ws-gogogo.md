@@ -94,7 +94,7 @@ Read the spec and classify what needs verifying:
 Before testing, ensure the dev server is running. This template serves the API and the static frontend from the same process:
 
 ```bash
-uv run uvicorn backend.app.main:app --reload
+uv run uvicorn app.main:app --reload --app-dir backend --port 8000
 ```
 
 Default URL: `http://localhost:8000`. The SQLite file `sandbox.db` is created on first boot.
