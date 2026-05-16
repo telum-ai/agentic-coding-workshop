@@ -1,15 +1,40 @@
 # Agentic Coding Sandbox
 
-A minimal template repository for the agentic-coding course. Get from `git clone` to a running FastAPI + SQLite + vanilla-JS app in under 60 seconds. No Node, no Docker, no build step, no runtime network calls.
+A minimal template repository for the agentic-coding course. Get from `git clone` to a running FastAPI + SQLite + vanilla-JS app in under 60 seconds. No Node, no Docker, no `make`, no build step, no runtime network calls.
 
 It ships one end-to-end smoke-test feature (`Ping`) that exercises every layer — env, web framework, database, static-file serving, frontend→backend call — so you can verify the environment works before you start building.
 
 ## Prerequisites
 
-- [uv](https://docs.astral.sh/uv/) (Python package manager). Install with `brew install uv` on macOS, or follow the [uv install guide](https://docs.astral.sh/uv/getting-started/installation/) on Linux / WSL2 / Windows.
-- Python 3.13 — `uv` will install it automatically using the version pinned in `.python-version`.
+- [uv](https://docs.astral.sh/uv/) — the Python package manager. Installs Python 3.13 automatically using the version pinned in `.python-version`.
+- `git`.
+- A modern browser to view the app.
 
-No Node, no Docker, no global Python required.
+No Node, no Docker, no global Python, no `make`, no JS package manager.
+
+## Platform setup
+
+### macOS
+
+```bash
+brew install uv git
+```
+
+If you don't use Homebrew, follow the [uv install guide](https://docs.astral.sh/uv/getting-started/installation/) and install `git` via Xcode Command Line Tools (`xcode-select --install`).
+
+### Linux / Windows (WSL2)
+
+On Windows 11, run all commands inside WSL2 — we recommend the Ubuntu distribution. (Native PowerShell will also work because every command below is just `uv run …`, but WSL2 keeps the experience uniform with macOS/Linux.)
+
+Debian / Ubuntu / WSL2 Ubuntu:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+sudo apt update && sudo apt install -y git
+```
+
+Fedora: `sudo dnf install git`, then install uv with the same `curl` command above.
+Arch: `sudo pacman -S git`, then install uv with the same `curl` command above.
 
 ## Setup
 
@@ -21,18 +46,18 @@ uv sync
 
 `uv sync` resolves dependencies from `uv.lock` and creates a local `.venv/`. Expect under 30 seconds on a warm cache.
 
-## Run
+## Run the dev server
 
 ```bash
-make run
+uv run uvicorn app.main:app --reload --app-dir backend --port 8000
 ```
 
-Then open http://localhost:8000 in a browser. You should see the page render with backend health = `ok` and a "Send ping" button.
+Then open <http://localhost:8000> in a browser. You should see the page render with backend health = `ok` and a "Send ping" button.
 
-## Test
+## Run the tests
 
 ```bash
-make test
+uv run pytest backend/tests/
 ```
 
 Runs the backend pytest suite against an in-memory SQLite database (your local `sandbox.db` is untouched). Expect under 5 seconds.
@@ -40,15 +65,16 @@ Runs the backend pytest suite against an in-memory SQLite database (your local `
 ## Lint
 
 ```bash
-make lint
+uv run ruff check .
+uv run ruff format --check .
 ```
 
-Runs `ruff check .` followed by `ruff format --check .` — both must be clean.
+Both must be clean.
 
 ## Reset the database
 
 ```bash
-make reset
+rm -f sandbox.db
 ```
 
 Deletes the local `sandbox.db` file at the repository root. The app will recreate the schema on next boot via `Base.metadata.create_all`.
@@ -77,7 +103,6 @@ frontend/
   README.md          # frontend-specific notes
 pyproject.toml       # Python project + dep + tool config
 uv.lock              # resolved dependency graph
-Makefile             # test / lint / run / reset
 sandbox.db           # SQLite database at repo root (created on first run; gitignored)
 LICENSE
 CLAUDE.md            # notes for Claude Code agents working in this repo
@@ -92,7 +117,7 @@ The runtime database lives at `./sandbox.db` (repo root). It is created on first
 This template uses `Base.metadata.create_all` rather than Alembic migrations. After modifying any SQLAlchemy model in `backend/app/models.py`:
 
 ```bash
-make reset
+rm -f sandbox.db
 ```
 
-This deletes `sandbox.db`. The next time the app boots (`make run`), it recreates the schema from the current models. You will lose any local data. Once data persistence matters, swap in Alembic — see the course materials for a later lesson.
+This deletes the database. The next time the app boots, it recreates the schema from the current models. You will lose any local data. Once data persistence matters, swap in Alembic — see the course materials for a later lesson.
