@@ -7,7 +7,7 @@ Operating notes for Claude Code agents working in this repository.
 This template uses `Base.metadata.create_all` to manage the SQLite schema — there is no Alembic and no migrations framework. After modifying any SQLAlchemy model in `backend/app/models.py`, run:
 
 ```bash
-make reset
+rm -f sandbox.db
 ```
 
 This deletes `sandbox.db`. The next app boot will recreate the schema from the current model definitions. If you skip this step after a model change, the app will run against the old schema and you will see "no such column" or "no such table" errors at request time.
