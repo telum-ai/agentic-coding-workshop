@@ -1,0 +1,46 @@
+import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
+
+from app.database import Base, get_db
+from app.main import app
+
+
+@pytest.fixture(scope="session")
+def engine():
+    eng = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    Base.metadata.create_all(eng)
+    return eng
+
+
+@pytest.fixture()
+def db_session(engine):
+    TestingSessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+    session = TestingSessionLocal()
+    try:
+        yield session
+    finally:
+        session.close()
+
+
+@pytest.fixture()
+def client(db_session):
+    def _override_get_db():
+        try:
+            yield db_session
+        finally:
+            pass
+
+    app.dependency_overrides[get_db] = _override_get_db
+    # Plain TestClient (no `with`) — avoids triggering the app lifespan, which
+    # would call Base.metadata.create_all against the real engine and create
+    # an empty sandbox.db file at the repo root. The in-memory engine fixture
+    # already creates the tables tests need.
+    yield TestClient(app)
+    app.dependency_overrides.clear()
