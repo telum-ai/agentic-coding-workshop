@@ -48,5 +48,9 @@ def client(db_session):
     # would call Base.metadata.create_all against the real engine and create
     # an empty sandbox.db file at the repo root. The in-memory engine fixture
     # already creates the tables tests need.
-    yield TestClient(app)
-    app.dependency_overrides.clear()
+    test_client = TestClient(app)
+    try:
+        yield test_client
+    finally:
+        test_client.close()
+        app.dependency_overrides.clear()

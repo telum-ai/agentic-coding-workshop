@@ -10,9 +10,10 @@ This frontend ships zero build tooling — no bundler, no transpiler, no Node, n
 
 We vendor a pinned copy of `@tailwindcss/browser` v4.3.0 at `vendor/tailwind.js`. Tailwind classes in `index.html` work because this runtime compiles them in the browser at page load. For production you would swap this in-browser runtime for a build-time Tailwind CLI pipeline — see <https://tailwindcss.com/docs/installation>.
 
-**Current vendored SHA-256:** `b91f8cd2dbae57f19d35a51934e6e4af24865d9725d4acf737a2993794270a1e`
+Two SHA-256 values are tracked to keep audits unambiguous:
 
-This SHA covers the file as downloaded from jsDelivr, **before** the local header comment was prepended. The same value is also recorded in the header comment at the top of `vendor/tailwind.js` so it is auditable from the file itself.
+- **Upstream (jsDelivr body, pre-header):** `b91f8cd2dbae57f19d35a51934e6e4af24865d9725d4acf737a2993794270a1e` — matches the jsDelivr per-file SRI hash and the value recorded in the header comment at the top of `vendor/tailwind.js`. Use this to verify the upstream payload during a re-vendor.
+- **Committed file (with header prepended):** `f29049665db504abd160f514c09c26dd995c0c1cbdbe5cd4fcbf47697cbcd504` — matches `shasum -a 256 vendor/tailwind.js` against the file as checked into the repo. Use this to verify the working-tree copy hasn't drifted.
 
 ## Re-vendoring procedure (with SHA-256 verification)
 
@@ -35,5 +36,5 @@ When updating Tailwind:
    ```
    Cross-check this value against the per-file SRI hash jsDelivr publishes for the package (visible in the same manifest URL from step 2).
 5. Prepend the standard header comment to the file with the new version, SHA-256, and today's date. Keep the existing file body intact.
-6. Update the **Current vendored SHA-256** line in this README to match.
+6. Recompute the committed-file SHA-256 (`shasum -a 256 frontend/vendor/tailwind.js`) and update both SHA-256 values in this README to match.
 7. Reload <http://localhost:8000/> and confirm Tailwind classes still render correctly.
