@@ -1,3 +1,22 @@
+"""Pytest fixtures for backend tests.
+
+Provides an in-memory SQLite engine and a FastAPI TestClient with the
+`get_db` dependency overridden so tests never touch the on-disk
+`sandbox.db` at the repo root.
+
+Two non-obvious choices to preserve when editing:
+
+1. `StaticPool` + `check_same_thread=False`: SQLite `:memory:` databases
+   are per-connection, so the pool must hand out the same connection to
+   every request within a test, including across threads (TestClient
+   uses a worker thread).
+2. Plain `TestClient(app)` instead of `with TestClient(app) as client`:
+   the `with` form runs the FastAPI lifespan, which calls
+   `Base.metadata.create_all` against the real engine and silently
+   creates an empty `sandbox.db` file. The in-memory engine fixture
+   already creates the tables tests need.
+"""
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
