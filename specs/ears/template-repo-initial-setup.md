@@ -12,7 +12,25 @@ This template will be used by participants in an agentic-coding course as the st
 
 ## Status
 
-All 53 requirements (REQ-001 – REQ-051 with split-IDs REQ-019b, REQ-026b, REQ-033b; REQ-038 unused) are implemented in the repository and awaiting user acceptance testing.
+**Verified 2026-05-16; amended 2026-05-16 to drop `make`.** All 54 requirements (REQ-001 – REQ-052 with split-IDs REQ-019b, REQ-026b, REQ-033b; REQ-038 unused; REQ-031 retired by amendment) are implemented and verified on macOS:
+
+- **48 requirements** verified by static file inspection (structure, deps, code, tests, documentation, constraints).
+- **REQ-018, REQ-024, REQ-025, REQ-026, REQ-026b, REQ-039, REQ-040** additionally verified end-to-end via `agent-browser`: page renders health + ping count, "Send ping" increments the count, count persists across reload, and both error alerts (load-time health failure and POST failure) render when the backend is stopped.
+- **REQ-013, REQ-016, REQ-019b** additionally verified end-to-end (count persisted across server restart).
+- **REQ-029, REQ-030, REQ-032, REQ-044** verified by running `uv run pytest backend/tests/` (3 passed in 0.02 s).
+- **REQ-033, REQ-033b** verified by running `uv run ruff check .` and `uv run ruff format --check .` (both clean).
+- **REQ-043** verified by `time uv sync` (17 ms warm-cache).
+- **REQ-050** verified by creating `sandbox.db` and running `rm -f sandbox.db`.
+- **REQ-031** retired by amendment (no Makefile shipped; verified by absence).
+- **REQ-034, REQ-052** post-amendment verification: confirmed the README documents the exact `uv run uvicorn …` command (REQ-034) and includes macOS + Linux/WSL2 platform setup sections (REQ-052).
+
+Three requirements remain assumed-good rather than fully verified in this environment:
+
+- **REQ-011** — `uv sync` on a clean machine without `.venv`/cache. Only cached idempotency was retested.
+- **REQ-042** — cross-platform behavior on Linux, Windows 11, WSL2. macOS only was exercised; participants will validate other platforms during dry-run as noted in the verification plan.
+- **REQ-045** — full clone-to-running wall time on a clean machine. Targets are aspirational per the verification notes; component timings (`uv sync` 17 ms cached, `uv run pytest backend/tests/` 0.02 s) leave ample headroom.
+
+No requirements are missing or unimplemented.
 
 ## Requirements
 
@@ -94,25 +112,29 @@ REQ-029: The backend tests shall include `test_health.py` which verifies that `G
 
 REQ-030: The backend tests shall include `test_pings.py` which verifies that after issuing `POST /api/pings` followed by `GET /api/pings`, the returned array contains exactly one record with an `id` field and a `created_at` field.
 
-### Functional requirements — tooling
+### Functional requirements — developer commands
 
-REQ-031: The template repository shall provide a `Makefile` at the repository root with targets `test`, `lint`, `run`, and `reset`.
+> *Amended 2026-05-16.* The original `Makefile` requirement (REQ-031) was retired in favor of direct `uv run …` invocations documented in the README. Rationale: dropping `make` removes a cross-platform install prerequisite (notably absent from native Windows and from minimal Linux images / fresh WSL2 Ubuntu without `build-essential`) and keeps the template's "no extra tooling" spirit consistent with the existing no-Node / no-Docker / no-build-step constraints. REQ-032 / REQ-033 / REQ-033b / REQ-034 / REQ-050 below are rephrased to require README documentation of the underlying commands instead of `make` targets.
 
-REQ-032: When a developer runs `make test`, the template repository shall execute `uv run pytest backend/tests/`.
+REQ-031: *Retired by amendment 2026-05-16.* The template repository shall not ship a `Makefile`; all developer commands are documented directly in `README.md`.
 
-REQ-033: When a developer runs `make lint`, the template repository shall execute `uv run ruff check .`.
+REQ-032: The `README.md` shall document `uv run pytest backend/tests/` as the command to run the backend test suite.
 
-REQ-033b: When a developer runs `make lint`, the template repository shall execute `uv run ruff format --check .`.
+REQ-033: The `README.md` shall document `uv run ruff check .` as one of the lint commands.
 
-REQ-034: When a developer runs `make run`, the template repository shall start the development server via `uv run uvicorn app.main:app --reload --app-dir backend --port 8000`.
+REQ-033b: The `README.md` shall document `uv run ruff format --check .` as one of the lint commands.
 
-REQ-050: When a developer runs `make reset`, the template repository shall delete the `sandbox.db` file at the repository root if it exists.
+REQ-034: The `README.md` shall document `uv run uvicorn app.main:app --reload --app-dir backend --port 8000` as the command to start the development server on port 8000.
+
+REQ-050: The `README.md` shall document deleting the `sandbox.db` file at the repository root (e.g. `rm -f sandbox.db`) as the schema-reset workflow.
+
+REQ-052: The `README.md` shall include platform-specific install instructions for macOS and for Linux / Windows (WSL2), covering at minimum how to install `uv` and `git` on each.
 
 ### Functional requirements — documentation
 
-REQ-035: The template repository shall provide a participant-facing `README.md` at the repository root that documents prerequisites, setup commands, run commands, test commands, the folder structure, the location of the SQLite database file, and the schema-change workflow (run `make reset` after modifying a model).
+REQ-035: The template repository shall provide a participant-facing `README.md` at the repository root that documents prerequisites, platform-specific install instructions, setup commands, run commands, test commands, the folder structure, the location of the SQLite database file, and the schema-change workflow (delete `sandbox.db` after modifying a model).
 
-REQ-036: The template repository shall provide a `CLAUDE.md` file at the repository root that documents for Claude Code agents the schema-change workflow (run `make reset` after modifying a model schema) and the no-JS-package-manager constraint (additional client-side JS goes in `app.js` directly or as a vendored static file following the `tailwind.js` procedure; never via npm, `package.json`, or a JS bundler), with additional best-practice content to be added in a later iteration.
+REQ-036: The template repository shall provide a `CLAUDE.md` file at the repository root that documents for Claude Code agents the schema-change workflow (delete `sandbox.db` after modifying a model schema) and the no-JS-package-manager constraint (additional client-side JS goes in `app.js` directly or as a vendored static file following the `tailwind.js` procedure; never via npm, `package.json`, or a JS bundler), with additional best-practice content to be added in a later iteration.
 
 REQ-037: The template repository shall provide a `frontend/README.md` that explains the no-build-step approach, the fact that all static files are served by the FastAPI backend, the pinned Tailwind version vendored in `vendor/tailwind.js`, and the procedure to re-vendor it from jsDelivr with SHA-256 verification.
 
@@ -132,7 +154,7 @@ REQ-043: The template repository shall complete `uv sync` in under 30 seconds on
 
 REQ-044: The template repository shall complete `uv run pytest backend/tests/` in under 5 seconds on a clean machine.
 
-REQ-045: The template repository shall reach a running server state in under 60 seconds when measured from `git clone` through `uv sync` to `make run` on a clean machine with a warm uv package cache.
+REQ-045: The template repository shall reach a running server state in under 60 seconds when measured from `git clone` through `uv sync` to `uv run uvicorn app.main:app --reload --app-dir backend --port 8000` on a clean machine with a warm uv package cache.
 
 REQ-046: The backend application shall not depend on Node.js or Docker.
 
@@ -147,11 +169,11 @@ REQ-048: The backend application shall use `Base.metadata.create_all` rather tha
 - **Backend HTTP behavior (REQ-018–020):** verified by `pytest` against the running app via `TestClient`, asserting status codes and JSON payloads.
 - **Static mount (REQ-014, REQ-021–023):** verified by curling `/` and confirming `index.html` is returned, and by curling `/vendor/tailwind.js` and confirming the vendored file is served.
 - **Frontend behavior (REQ-024–026, REQ-039–040):** verified manually by loading `http://localhost:8000/` in a browser, clicking the "Send ping" button, refreshing the page to confirm the count persists, and stopping the backend to confirm the unreachable-state error renders.
-- **Tooling (REQ-031–034):** verified by invoking each `make` target and confirming the underlying command runs.
+- **Developer commands (REQ-031–034, REQ-050, REQ-052):** verified by inspecting `README.md` to confirm each documented command matches the spec, and by running each `uv run …` command from the repository root to confirm it executes successfully. Original `make`-target verification (pre-amendment 2026-05-16) was performed by invoking each target.
 - **Performance (REQ-043–045):** verified with `time uv sync`, `time uv run pytest`, and a stopwatch on the full clone-to-running sequence on the author's macOS machine; targets are aspirational on first-time-without-cache machines.
 - **Cross-platform (REQ-042):** assumed-good for the initial release (no CI verification); to be validated by participants during dry-run.
 - **Structural & wiring (REQ-012, REQ-013, REQ-015, REQ-016, REQ-017, REQ-027, REQ-028, REQ-035–037, REQ-041, REQ-046–049, REQ-051):** verified by code review and file inspection — presence and correctness of files, imports, declarations, and header-comment fields is sufficient. REQ-013 is additionally validated implicitly by passing tests (a missing `create_all` would surface as "no such table" failures). REQ-051 verified by reading the first lines of `frontend/vendor/tailwind.js` and confirming the SHA-256 in the header matches `shasum -a 256 frontend/vendor/tailwind.js`.
-- **`make reset` and port pin (REQ-034, REQ-050):** verified manually by creating `sandbox.db`, running `make reset` and confirming the file is removed, and curling `http://localhost:8000/api/health` after `make run` to confirm the port binding.
+- **Schema reset and port pin (REQ-034, REQ-050):** verified manually by creating `sandbox.db`, running `rm -f sandbox.db` and confirming the file is removed, and curling `http://localhost:8000/api/health` after `uv run uvicorn …` to confirm the port binding.
 
 ## Decisions
 
@@ -161,8 +183,8 @@ The following calls are already settled by requirements but worth surfacing for 
 2. **`POST /api/pings` body** — accepts any body (including empty/none); no validation. Keeps the smoke test minimal. See REQ-019.
 3. **Frontend display detail** — count only (no list of timestamps). Refreshing the page demonstrates persistence; a list was rejected as gold-plating. See REQ-025.
 4. **Test database** — in-memory SQLite rather than a temp file. Slightly faster, no cleanup needed. See REQ-027.
-5. **Dev-server port** — pinned to `8000` in `make run` so the canonical local URL is `http://localhost:8000`. See REQ-034.
-6. **Schema-change workflow** — `make reset` deletes `sandbox.db`; README and CLAUDE.md document that students should run it after modifying a model. We deliberately did not adopt Alembic for this template; Alembic is the right answer once data persistence matters and the course can introduce it as a later lesson. See REQ-035, REQ-036, REQ-050.
+5. **Dev-server port** — pinned to `8000` in the documented `uv run uvicorn …` command so the canonical local URL is `http://localhost:8000`. See REQ-034.
+6. **Schema-change workflow** — deleting `sandbox.db` (via `rm -f sandbox.db`) is the documented reset path; README and CLAUDE.md document that students should run it after modifying a model. We deliberately did not adopt Alembic for this template; Alembic is the right answer once data persistence matters and the course can introduce it as a later lesson. See REQ-035, REQ-036, REQ-050.
 7. **Python version** — pinned to `3.13` via `.python-version` and the `requires-python` declaration in `pyproject.toml`. Chosen for improved error messages and modern-default status while keeping library compatibility comfortable. See REQ-002, REQ-049.
 8. **Tailwind version & vendoring source** — pinned to Tailwind CSS `4.3.0` vendored from jsDelivr's `@tailwindcss/browser` package with SHA-256 verification at vendoring time. v4 chosen over v3 (still supported until Feb 2027) because by mid-2026 LLMs default to v4 syntax when generating Tailwind classes; pinning a course template to v3 would create friction between agent-generated code and what works in the template. jsDelivr chosen over Tailwind's own CDN because it publishes per-file SRI hashes, giving an independent integrity source alongside npm package provenance. SHA-256 is recorded in a header comment in the vendored file at vendoring time, and re-vendoring instructions are documented in `frontend/README.md` so future updates remain auditable. See REQ-022, REQ-023, REQ-037, REQ-051.
 9. **No JavaScript package manager** — the template ships zero `package.json`, no npm/yarn/pnpm, no Node, no bundler. The entire client-side JS surface is `frontend/app.js` (own code) plus `frontend/vendor/tailwind.js` (one vendored static file pinned by commit + header SHA-256). Additional client-side JS should be added inline to `app.js` or vendored as a static file following the `tailwind.js` procedure. Rationale: eliminates transitive-dependency supply chain risk, removes lockfile drift, removes any cross-platform Node toolchain requirement, and gives a single auditable file as the entire client-side third-party surface. CLAUDE.md instructs agents accordingly. See REQ-036, REQ-051.
