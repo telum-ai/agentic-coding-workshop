@@ -60,7 +60,7 @@ Use agent teams to implement the scoped requirements. Read AGENTS.md and any rel
 - Read the spec's `## Verification notes` for additional context on expected behavior.
 - Use the Plan agent first to create an implementation plan for the scoped requirements. Present the plan to the user for approval before building.
 - After plan approval, use agent teams to build in parallel where possible:
-  - **Backend agent** — for API endpoints, models, services. Before writing code, read `backend/AGENTS.md` and inspect `backend/app/` to understand the current schema-management approach (this template currently uses `Base.metadata.create_all` and a deleted-and-recreated `sandbox.db`; that may evolve to Alembic or another migrations tool — adapt to what you actually find).
+  - **Backend agent** — for API endpoints, models, services. Before writing code, read `backend/AGENTS.md` and inspect `backend/app/` to understand the current schema-management approach (this template currently uses `Base.metadata.create_all` and a deleted-and-recreated `workshop.db`; that may evolve to Alembic or another migrations tool — adapt to what you actually find).
   - **Frontend agent** — for changes under `frontend/`. Read `frontend/README.md` and inspect the directory to learn the current setup (this template currently ships vanilla JS with vendored Tailwind and no JS framework or bundler; if a framework has been introduced, follow its conventions).
   - Split further if the work is large enough to benefit from it.
 - Each agent must read the relevant AGENTS.md files and follow project conventions.
@@ -85,7 +85,7 @@ Read the spec and classify what needs verifying:
 
 - **Frontend UI** — if the spec involves user-facing pages or interactions, use `agent-browser` to verify through the browser. The server runs at `http://localhost:8000` per Prerequisites.
 - **API endpoints** — if the spec involves HTTP endpoints, verify by calling them directly with `curl` or `httpx` against the running backend.
-- **Database state** — if the spec involves table structure or data persistence, verify by inspecting `sandbox.db` (e.g., `sqlite3 sandbox.db ".schema"`) or by hitting the relevant endpoint.
+- **Database state** — if the spec involves table structure or data persistence, verify by inspecting `workshop.db` (e.g., `sqlite3 workshop.db ".schema"`) or by hitting the relevant endpoint.
 - **File/module structure** — if the spec involves deleting, moving, or restructuring code, verify by checking file existence, running import checks, and confirming no broken references.
 - **Mixed** — most specs combine several of the above. Use the appropriate method for each requirement.
 
@@ -97,7 +97,7 @@ Before testing, ensure the dev server is running. This template serves the API a
 uv run uvicorn app.main:app --reload --app-dir backend --port 8000
 ```
 
-Default URL: `http://localhost:8000`. The SQLite file `sandbox.db` is created on first boot.
+Default URL: `http://localhost:8000`. The SQLite file `workshop.db` is created on first boot.
 
 ### Browser testing (when applicable)
 

@@ -4,8 +4,8 @@
     "allow": [
       "Bash(uv run pytest:*)",
       "Bash(uv run ruff:*)",
-      "Bash(rm sandbox.db)",
-      "Bash(rm -f sandbox.db)",
+      "Bash(rm workshop.db)",
+      "Bash(rm -f workshop.db)",
       "Bash(find:*)",
       "Bash(grep:*)"
     ]

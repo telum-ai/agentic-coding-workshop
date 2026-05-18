@@ -3,11 +3,11 @@ from pathlib import Path
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-# Anchor the sandbox DB to the repository root regardless of the launch CWD,
-# so `rm -f sandbox.db` at the repo root and the app always refer to the same
+# Anchor the workshop DB to the repository root regardless of the launch CWD,
+# so `rm -f workshop.db` at the repo root and the app always refer to the same
 # file. REQ-016.
 REPO_ROOT = Path(__file__).resolve().parents[2]
-SQLALCHEMY_DATABASE_URL = f"sqlite:///{REPO_ROOT / 'sandbox.db'}"
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{REPO_ROOT / 'workshop.db'}"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
