@@ -2,7 +2,7 @@
 
 Provides an in-memory SQLite engine and a FastAPI TestClient with the
 `get_db` dependency overridden so tests never touch the on-disk
-`sandbox.db` at the repo root.
+`workshop.db` at the repo root.
 
 Two non-obvious choices to preserve when editing:
 
@@ -13,7 +13,7 @@ Two non-obvious choices to preserve when editing:
 2. Plain `TestClient(app)` instead of `with TestClient(app) as client`:
    the `with` form runs the FastAPI lifespan, which calls
    `Base.metadata.create_all` against the real engine and silently
-   creates an empty `sandbox.db` file. The in-memory engine fixture
+   creates an empty `workshop.db` file. The in-memory engine fixture
    already creates the tables tests need.
 """
 
@@ -65,7 +65,7 @@ def client(db_session):
     app.dependency_overrides[get_db] = _override_get_db
     # Plain TestClient (no `with`) — avoids triggering the app lifespan, which
     # would call Base.metadata.create_all against the real engine and create
-    # an empty sandbox.db file at the repo root. The in-memory engine fixture
+    # an empty workshop.db file at the repo root. The in-memory engine fixture
     # already creates the tables tests need.
     test_client = TestClient(app)
     try:

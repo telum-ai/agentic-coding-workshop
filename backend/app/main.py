@@ -16,12 +16,12 @@ if not FRONTEND_DIR.is_dir():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # REQ-013 — create tables when the application starts (not at import time,
-    # so tests that override the DB dependency never touch sandbox.db).
+    # so tests that override the DB dependency never touch workshop.db).
     Base.metadata.create_all(bind=engine)
     yield
 
 
-app = FastAPI(title="Agentic Coding Sandbox", lifespan=lifespan)
+app = FastAPI(title="Agentic Coding Workshop", lifespan=lifespan)
 
 # REQ-015 — API endpoints under /api/
 app.include_router(health.router, prefix="/api")

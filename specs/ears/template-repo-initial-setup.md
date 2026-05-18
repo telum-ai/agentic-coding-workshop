@@ -3,7 +3,7 @@
 > Bare-bones template repo that gets course participants from `git clone` to a running FastAPI + SQLite + vanilla-JS app in under 60 seconds, with no Node, no Docker, no build step, and no runtime network calls. Includes a single end-to-end smoke-test feature (`Ping`) that exercises every layer so participants can verify their environment is working before they start building.
 
 **Type:** New feature
-**System:** Template repository (agentic-coding-sandbox)
+**System:** Template repository (agentic-coding-workshop)
 **Date:** 2026-05-16
 
 ## Context
@@ -20,7 +20,7 @@ This template will be used by participants in an agentic-coding course as the st
 - **REQ-029, REQ-030, REQ-032, REQ-044** verified by running `uv run pytest backend/tests/` (3 passed in 0.02 s).
 - **REQ-033, REQ-033b** verified by running `uv run ruff check .` and `uv run ruff format --check .` (both clean).
 - **REQ-043** verified by `time uv sync` (17 ms warm-cache).
-- **REQ-050** verified by creating `sandbox.db` and running `rm -f sandbox.db`.
+- **REQ-050** verified by creating `workshop.db` and running `rm -f workshop.db`.
 - **REQ-031** retired by amendment (no Makefile shipped; verified by absence).
 - **REQ-034, REQ-052** post-amendment verification: confirmed the README documents the exact `uv run uvicorn …` command (REQ-034) and includes macOS + Linux/WSL2 platform setup sections (REQ-052).
 
@@ -50,7 +50,7 @@ REQ-006: The template repository shall commit a `uv.lock` file at the repository
 
 REQ-007: The template repository shall provide an MIT `LICENSE` file at the repository root.
 
-REQ-008: The template repository shall provide a `.gitignore` file at the repository root that excludes `.venv/`, `__pycache__/`, `*.pyc`, `sandbox.db`, `.pytest_cache/`, `.vscode/`, `.idea/`, `.env`, and `.env.*`.
+REQ-008: The template repository shall provide a `.gitignore` file at the repository root that excludes `.venv/`, `__pycache__/`, `*.pyc`, `workshop.db`, `.pytest_cache/`, `.vscode/`, `.idea/`, `.env`, and `.env.*`.
 
 REQ-009: The template repository shall lay out source files with `backend/` and `frontend/` as top-level sibling directories of `pyproject.toml`.
 
@@ -72,7 +72,7 @@ REQ-014: The backend application shall mount the repository's `frontend/` direct
 
 REQ-015: The backend application shall expose all JSON API endpoints under the URL prefix `/api/`.
 
-REQ-016: The backend application shall persist data in a SQLite database file named `sandbox.db` located at the repository root.
+REQ-016: The backend application shall persist data in a SQLite database file named `workshop.db` located at the repository root.
 
 REQ-017: The backend application shall define a `Ping` SQLAlchemy model in `backend/app/models.py` with the fields `id` (integer primary key, autoincrement) and `created_at` (datetime, server-default current UTC time).
 
@@ -106,7 +106,7 @@ REQ-026b: When the frontend application receives a successful response from a us
 
 REQ-027: The backend tests shall provide a `conftest.py` that creates an isolated in-memory SQLite database for the test session.
 
-REQ-028: The backend tests shall provide a `conftest.py` that overrides the FastAPI dependency yielding database sessions so that tests do not touch `sandbox.db`.
+REQ-028: The backend tests shall provide a `conftest.py` that overrides the FastAPI dependency yielding database sessions so that tests do not touch `workshop.db`.
 
 REQ-029: The backend tests shall include `test_health.py` which verifies that `GET /api/health` returns HTTP 200 with the JSON body `{"status": "ok"}`.
 
@@ -126,15 +126,15 @@ REQ-033b: The `README.md` shall document `uv run ruff format --check .` as one o
 
 REQ-034: The `README.md` shall document `uv run uvicorn app.main:app --reload --app-dir backend --port 8000` as the command to start the development server on port 8000.
 
-REQ-050: The `README.md` shall document deleting the `sandbox.db` file at the repository root (e.g. `rm -f sandbox.db`) as the schema-reset workflow.
+REQ-050: The `README.md` shall document deleting the `workshop.db` file at the repository root (e.g. `rm -f workshop.db`) as the schema-reset workflow.
 
 REQ-052: The `README.md` shall include platform-specific install instructions for macOS and for Linux / Windows (WSL2), covering at minimum how to install `uv` and `git` on each.
 
 ### Functional requirements — documentation
 
-REQ-035: The template repository shall provide a participant-facing `README.md` at the repository root that documents prerequisites, platform-specific install instructions, setup commands, run commands, test commands, the folder structure, the location of the SQLite database file, and the schema-change workflow (delete `sandbox.db` after modifying a model).
+REQ-035: The template repository shall provide a participant-facing `README.md` at the repository root that documents prerequisites, platform-specific install instructions, setup commands, run commands, test commands, the folder structure, the location of the SQLite database file, and the schema-change workflow (delete `workshop.db` after modifying a model).
 
-REQ-036: The template repository shall provide a `CLAUDE.md` file at the repository root that documents for Claude Code agents the schema-change workflow (delete `sandbox.db` after modifying a model schema) and the no-JS-package-manager constraint (additional client-side JS goes in `app.js` directly or as a vendored static file following the `tailwind.js` procedure; never via npm, `package.json`, or a JS bundler), with additional best-practice content to be added in a later iteration.
+REQ-036: The template repository shall provide a `CLAUDE.md` file at the repository root that documents for Claude Code agents the schema-change workflow (delete `workshop.db` after modifying a model schema) and the no-JS-package-manager constraint (additional client-side JS goes in `app.js` directly or as a vendored static file following the `tailwind.js` procedure; never via npm, `package.json`, or a JS bundler), with additional best-practice content to be added in a later iteration.
 
 REQ-037: The template repository shall provide a `frontend/README.md` that explains the no-build-step approach, the fact that all static files are served by the FastAPI backend, the pinned Tailwind version vendored in `vendor/tailwind.js`, and the procedure to re-vendor it from jsDelivr with SHA-256 verification.
 
@@ -173,7 +173,7 @@ REQ-048: The backend application shall use `Base.metadata.create_all` rather tha
 - **Performance (REQ-043–045):** verified with `time uv sync`, `time uv run pytest`, and a stopwatch on the full clone-to-running sequence on the author's macOS machine; targets are aspirational on first-time-without-cache machines.
 - **Cross-platform (REQ-042):** assumed-good for the initial release (no CI verification); to be validated by participants during dry-run.
 - **Structural & wiring (REQ-012, REQ-013, REQ-015, REQ-016, REQ-017, REQ-027, REQ-028, REQ-035–037, REQ-041, REQ-046–049, REQ-051):** verified by code review and file inspection — presence and correctness of files, imports, declarations, and header-comment fields is sufficient. REQ-013 is additionally validated implicitly by passing tests (a missing `create_all` would surface as "no such table" failures). REQ-051 verified by reading the first lines of `frontend/vendor/tailwind.js` and confirming the SHA-256 in the header matches `shasum -a 256 frontend/vendor/tailwind.js`.
-- **Schema reset and port pin (REQ-034, REQ-050):** verified manually by creating `sandbox.db`, running `rm -f sandbox.db` and confirming the file is removed, and curling `http://localhost:8000/api/health` after `uv run uvicorn …` to confirm the port binding.
+- **Schema reset and port pin (REQ-034, REQ-050):** verified manually by creating `workshop.db`, running `rm -f workshop.db` and confirming the file is removed, and curling `http://localhost:8000/api/health` after `uv run uvicorn …` to confirm the port binding.
 
 ## Decisions
 
@@ -184,7 +184,7 @@ The following calls are already settled by requirements but worth surfacing for 
 3. **Frontend display detail** — count only (no list of timestamps). Refreshing the page demonstrates persistence; a list was rejected as gold-plating. See REQ-025.
 4. **Test database** — in-memory SQLite rather than a temp file. Slightly faster, no cleanup needed. See REQ-027.
 5. **Dev-server port** — pinned to `8000` in the documented `uv run uvicorn …` command so the canonical local URL is `http://localhost:8000`. See REQ-034.
-6. **Schema-change workflow** — deleting `sandbox.db` (via `rm -f sandbox.db`) is the documented reset path; README and CLAUDE.md document that students should run it after modifying a model. We deliberately did not adopt Alembic for this template; Alembic is the right answer once data persistence matters and the course can introduce it as a later lesson. See REQ-035, REQ-036, REQ-050.
+6. **Schema-change workflow** — deleting `workshop.db` (via `rm -f workshop.db`) is the documented reset path; README and CLAUDE.md document that students should run it after modifying a model. We deliberately did not adopt Alembic for this template; Alembic is the right answer once data persistence matters and the course can introduce it as a later lesson. See REQ-035, REQ-036, REQ-050.
 7. **Python version** — pinned to `3.13` via `.python-version` and the `requires-python` declaration in `pyproject.toml`. Chosen for improved error messages and modern-default status while keeping library compatibility comfortable. See REQ-002, REQ-049.
 8. **Tailwind version & vendoring source** — pinned to Tailwind CSS `4.3.0` vendored from jsDelivr's `@tailwindcss/browser` package with SHA-256 verification at vendoring time. v4 chosen over v3 (still supported until Feb 2027) because by mid-2026 LLMs default to v4 syntax when generating Tailwind classes; pinning a course template to v3 would create friction between agent-generated code and what works in the template. jsDelivr chosen over Tailwind's own CDN because it publishes per-file SRI hashes, giving an independent integrity source alongside npm package provenance. SHA-256 is recorded in a header comment in the vendored file at vendoring time, and re-vendoring instructions are documented in `frontend/README.md` so future updates remain auditable. See REQ-022, REQ-023, REQ-037, REQ-051.
 9. **No JavaScript package manager** — the template ships zero `package.json`, no npm/yarn/pnpm, no Node, no bundler. The entire client-side JS surface is `frontend/app.js` (own code) plus `frontend/vendor/tailwind.js` (one vendored static file pinned by commit + header SHA-256). Additional client-side JS should be added inline to `app.js` or vendored as a static file following the `tailwind.js` procedure. Rationale: eliminates transitive-dependency supply chain risk, removes lockfile drift, removes any cross-platform Node toolchain requirement, and gives a single auditable file as the entire client-side third-party surface. CLAUDE.md instructs agents accordingly. See REQ-036, REQ-051.
