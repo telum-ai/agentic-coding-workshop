@@ -82,6 +82,12 @@ uv run ruff format --check .
 
 Both must be clean.
 
+## Warm-up exercise
+
+New to MCP? Before the main workshop, try the five-minute warm-up in
+[`docs/warmup-mcp-server.md`](docs/warmup-mcp-server.md) — it walks you through
+connecting Claude Code to an MCP server.
+
 ## Reset the database
 
 ```bash
