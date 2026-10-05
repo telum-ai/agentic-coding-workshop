@@ -116,7 +116,7 @@ frontend/
   index.html         # served at /
   app.js             # frontend logic — fetch /api/health, /api/pings
   vendor/
-    tailwind.js      # vendored @tailwindcss/browser v4.3.0 (SHA-256 in header)
+    tailwind.js      # vendored @tailwindcss/browser v4.3.3 (SHA-256 in header)
   README.md          # frontend-specific notes
 pyproject.toml       # Python project + dep + tool config
 uv.lock              # resolved dependency graph

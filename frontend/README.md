@@ -8,12 +8,12 @@ This frontend ships zero build tooling — no bundler, no transpiler, no Node, n
 
 ## Vendored Tailwind
 
-We vendor a pinned copy of `@tailwindcss/browser` v4.3.0 at `vendor/tailwind.js`. Tailwind classes in `index.html` work because this runtime compiles them in the browser at page load. For production you would swap this in-browser runtime for a build-time Tailwind CLI pipeline — see <https://tailwindcss.com/docs/installation>.
+We vendor a pinned copy of `@tailwindcss/browser` v4.3.3 at `vendor/tailwind.js`. Tailwind classes in `index.html` work because this runtime compiles them in the browser at page load. For production you would swap this in-browser runtime for a build-time Tailwind CLI pipeline — see <https://tailwindcss.com/docs/installation>.
 
 Two SHA-256 values are tracked to keep audits unambiguous:
 
-- **Upstream (jsDelivr body, pre-header):** `b91f8cd2dbae57f19d35a51934e6e4af24865d9725d4acf737a2993794270a1e` — matches the jsDelivr per-file SRI hash and the value recorded in the header comment at the top of `vendor/tailwind.js`. Use this to verify the upstream payload during a re-vendor.
-- **Committed file (with header prepended):** `f29049665db504abd160f514c09c26dd995c0c1cbdbe5cd4fcbf47697cbcd504` — matches `shasum -a 256 vendor/tailwind.js` against the file as checked into the repo. Use this to verify the working-tree copy hasn't drifted.
+- **Upstream (jsDelivr body, pre-header):** `a60c785630a06196808cbe79e6f7bdb4abcc8f4421a47b56f29338fc84805e3b` — matches the jsDelivr per-file SRI hash and the value recorded in the header comment at the top of `vendor/tailwind.js`. Use this to verify the upstream payload during a re-vendor.
+- **Committed file (with header prepended):** `76ace59fd5abf62da7996f1e839772a88c03579bc7061083b1f6afcb0059a799` — matches `shasum -a 256 vendor/tailwind.js` against the file as checked into the repo. Use this to verify the working-tree copy hasn't drifted.
 
 ## Re-vendoring procedure (with SHA-256 verification)
 

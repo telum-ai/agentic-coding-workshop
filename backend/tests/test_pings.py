@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from app.models import Ping
 
@@ -22,7 +22,7 @@ def test_get_pings_orders_newest_first(client, db_session):
     # Insert via the session with explicit created_at so ordering is
     # deterministic (SQLite's current_timestamp default has only
     # second-level resolution, which can tie for back-to-back POSTs).
-    base = datetime(2026, 5, 16, 12, 0, 0)
+    base = datetime(2026, 5, 16, 12, 0, 0, tzinfo=UTC)
     db_session.add_all(
         [
             Ping(created_at=base),

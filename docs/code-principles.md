@@ -54,6 +54,7 @@ Example:
 # BAD
 def load_and_validate_and_email_user(id): ...
 
+
 # GOOD
 user = load_user(id)
 validate(user)
